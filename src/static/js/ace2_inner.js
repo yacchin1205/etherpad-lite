@@ -2290,7 +2290,8 @@ function Ace2Inner(editorInfo, cssManagers) {
   };
 
   const hideEditBarDropdowns = () => {
-    window.parent.parent.padeditbar.toggleDropDown('none');
+    const {padeditbar} = window.parent.parent.require('ep_etherpad-lite/static/js/pad_editbar');
+    padeditbar.toggleDropDown('none');
   };
 
   const renumberList = (lineNum) => {
