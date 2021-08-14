@@ -63,6 +63,10 @@ const makeChangesetTracker = (scheduler, apool, aceCallbacksProvider) => {
 
   let self;
   return self = {
+    _authorId: null,
+    setAuthorId(authorId) {
+      this._authorId = authorId;
+    },
     isTracking: () => tracking,
     setBaseText: (text) => {
       self.setBaseAttributedText(Changeset.makeAText(text), null);
@@ -127,7 +131,7 @@ const makeChangesetTracker = (scheduler, apool, aceCallbacksProvider) => {
         }
       });
     },
-    prepareUserChangeset: () => {
+    prepareUserChangeset() {
       // If there are user changes to submit, 'changeset' will be the
       // changeset, else it will be null.
       let toSubmit;
@@ -136,8 +140,7 @@ const makeChangesetTracker = (scheduler, apool, aceCallbacksProvider) => {
         // that includes old submittedChangeset
         toSubmit = Changeset.compose(submittedChangeset, userChangeset, apool);
       } else {
-        // Get my authorID
-        const authorId = parent.parent.pad.myUserInfo.userId;
+        if (!this._authorId) throw new Error('setAuthorId() not yet called');
 
         // Sanitize authorship
         // We need to replace all author attribs with thisSession.author,
@@ -146,7 +149,7 @@ const makeChangesetTracker = (scheduler, apool, aceCallbacksProvider) => {
           let authorAttr;
           for (const attr in apool.numToAttrib) {
             if (apool.numToAttrib[attr][0] === 'author' &&
-                apool.numToAttrib[attr][1] === authorId) {
+                apool.numToAttrib[attr][1] === this._authorId) {
               authorAttr = Number(attr).toString(36);
             }
           }
