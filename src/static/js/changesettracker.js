@@ -52,8 +52,6 @@ const makeChangesetTracker = (scheduler, apool, aceCallbacksProvider) => {
       changeCallbackTimeout = scheduler.setTimeout(() => {
         try {
           changeCallback();
-        } catch (pseudoError) {
-          // as empty as my soul
         } finally {
           changeCallbackTimeout = null;
         }
