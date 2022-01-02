@@ -15,12 +15,19 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: etherpad/etherpad
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/etherpad
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+        with:
+          platforms: all
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v1
@@ -30,7 +37,9 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
+          builder: ${{ steps.buildx.outputs.name }}
           context: .
           push: ${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm/v7
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
