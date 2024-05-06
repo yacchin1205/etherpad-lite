@@ -129,9 +129,14 @@ exports.getPackages = async () => {
     if (!plugin.name.startsWith(exports.prefix)) {
       continue;
     }
-    plugin.realPath = await fs.realpath(plugin.location);
+    // To modify live-plugin-manager to correctly handle dependencies between versions,
+    // I intend to use symlink to allow multiple versions to coexist.
+    // In this case, if we use fs.realpath, the symlink will be resolved and live-plugin-manager
+    // not work properly, so we will use plugin.location as it is.
+    plugin.realPath = plugin.location; //await fs.realpath(plugin.location);
     plugin.path = plugin.realPath;
     newDependencies[plugin.name] = plugin;
+    console.log(`Found plugin ${plugin.name} at ${plugin.location}, real path ${plugin.realPath}`);
   }
 
   newDependencies['ep_etherpad-lite'] = {

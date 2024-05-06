@@ -1,4 +1,4 @@
-import {IPluginInfo, PluginManager} from "live-plugin-manager";
+import {IPluginInfo, PluginManager} from "@yacchin1205/live-plugin-manager";
 import path from "path";
 import {node_modules, pluginInstallPath} from "./installer";
 import {accessSync, constants, rmSync, symlinkSync, unlinkSync} from "node:fs";
